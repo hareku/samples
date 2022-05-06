@@ -69,11 +69,14 @@ async function sendData() {
       case 'bidi': {
         let stream = await transport.createBidirectionalStream();
         let number = streamNumber++;
-        readFromIncomingStream(stream, number);
+        readFromIncomingStream(stream.readable, number);
 
         let writer = stream.writable.getWriter();
         await writer.write(data);
-        await writer.close();
+        setTimeout(() => {
+          writer.close();
+          console.log('closed bidi stream')
+        }, 1000)
         addToEventLog(
             'Opened bidirectional stream #' + number +
             ' with data: ' + rawData);
